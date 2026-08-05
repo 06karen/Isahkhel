@@ -4,86 +4,335 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Icha Khel — WebXR Prototype (A-Frame)</title>
+    <title>Icha Khel — Adaptive Youth Sports Park (Pillar 1 WebXR)</title>
 
-    <!-- A-Frame core + teleport-controls extra, both from CDN so this stays a single file -->
+    <!-- A-Frame Core + Verified Plugins -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.3.3/dist/aframe-environment-component.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        html,
-        body {
+        :root {
+            --bg-dark: #060811;
+            --panel-bg: rgba(13, 17, 30, 0.8);
+            --accent-cyan: #00f2fe;
+            --accent-orange: #ff781f;
+            --accent-purple: #9d50bb;
+            --accent-lime: #4ade80;
+            --accent-gold: #ffb347;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-glow: rgba(0, 242, 254, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        html, body {
             margin: 0;
             padding: 0;
+            width: 100%;
             height: 100%;
             overflow: hidden;
-            background: #060811;
+            background: var(--bg-dark);
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-main);
         }
 
-        /* ---- 2D overlay UI (hidden automatically once an XR session starts) ---- */
-        #hud {
+        /* ------------------------------------------------------------- */
+        /* Glassmorphism Header & Scoreboard HUD                         */
+        /* ------------------------------------------------------------- */
+        #hud-header {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 10;
+            top: 16px;
+            left: 20px;
+            right: 20px;
+            z-index: 100;
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            padding: 16px 20px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            color: #e6e6f0;
+            align-items: center;
             pointer-events: none;
         }
 
-        #hud .brand {
-            font-size: 15px;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            opacity: 0.85;
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(14px);
+            border: 1px solid var(--border-glow);
+            padding: 10px 18px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            pointer-events: auto;
         }
 
-        #status {
-            background: rgba(10, 10, 20, 0.55);
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-cyan));
             border-radius: 10px;
-            padding: 10px 14px;
-            font-size: 13px;
-            line-height: 1.5;
-            max-width: 280px;
-            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+            color: #fff;
+            box-shadow: 0 0 16px rgba(255, 120, 31, 0.4);
         }
 
-        #status b {
-            color: #9fd5ff;
+        .brand-title {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            background: linear-gradient(90deg, #ffffff, var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        #enter-vr-hint {
+        .brand-sub {
+            font-size: 11px;
+            color: var(--accent-gold);
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        /* Scoreboard Display */
+        .score-display {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            padding: 8px 20px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(74, 222, 128, 0.2);
+            pointer-events: auto;
+        }
+
+        .score-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .score-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .score-val {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--accent-lime);
+            text-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+        }
+
+        /* ------------------------------------------------------------- */
+        /* Sports Station Nav Tabs (Top Center)                           */
+        /* ------------------------------------------------------------- */
+        #sports-selector {
             position: fixed;
-            bottom: 24px;
+            top: 80px;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 10;
-            background: rgba(10, 10, 20, 0.65);
+            z-index: 100;
+            display: flex;
+            gap: 8px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 999px;
-            padding: 10px 18px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            color: #d8d8e6;
+            padding: 6px;
+            border-radius: 24px;
+            pointer-events: auto;
+        }
+
+        .station-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 16px;
+            font-family: inherit;
             font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .station-btn:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .station-btn.active {
+            color: #fff;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-purple));
+            border: 1px solid var(--accent-orange);
+            box-shadow: 0 0 16px rgba(255, 120, 31, 0.4);
+        }
+
+        /* ------------------------------------------------------------- */
+        /* Accessibility Controls Dock (Bottom Left)                      */
+        /* ------------------------------------------------------------- */
+        #accessibility-dock {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 100;
+            background: var(--panel-bg);
+            backdrop-filter: blur(14px);
+            border: 1px solid var(--border-glow);
+            border-radius: 20px;
+            padding: 14px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 300px;
+            pointer-events: auto;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .dock-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent-cyan);
+            font-weight: 800;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        /* Custom Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 22px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background-color: #334155;
+            transition: .3s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent-cyan);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(18px);
+        }
+
+        /* ------------------------------------------------------------- */
+        /* Single-Switch Overlay & Feedback Prompts                       */
+        /* ------------------------------------------------------------- */
+        #single-switch-bar {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            background: var(--panel-bg);
+            backdrop-filter: blur(14px);
+            border: 1px solid var(--accent-gold);
+            border-radius: 18px;
+            padding: 12px 20px;
+            font-size: 13px;
+            color: var(--accent-gold);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 0 24px rgba(255, 179, 71, 0.25);
+            pointer-events: auto;
+        }
+
+        .key-badge {
+            background: rgba(255, 179, 71, 0.2);
+            padding: 4px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--accent-gold);
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        #feedback-toast {
+            position: fixed;
+            top: 140px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 150;
+            background: rgba(74, 222, 128, 0.9);
+            color: #060811;
+            font-weight: 800;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-size: 15px;
+            box-shadow: 0 0 30px rgba(74, 222, 128, 0.6);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             pointer-events: none;
         }
 
-        /* Comfort vignette shown briefly during teleport/turn, reduces motion sickness */
+        #feedback-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(10px);
+        }
+
         #comfort-vignette {
             position: fixed;
             inset: 0;
-            z-index: 5;
+            z-index: 50;
             pointer-events: none;
-            background: radial-gradient(circle, rgba(0, 0, 0, 0) 45%, rgba(5, 5, 10, 0.9) 100%);
+            background: radial-gradient(circle, rgba(0, 0, 0, 0) 35%, rgba(6, 8, 17, 0.95) 100%);
             opacity: 0;
-            transition: opacity 0.15s ease;
+            transition: opacity 0.2s ease;
         }
 
         #comfort-vignette.active {
@@ -99,190 +348,481 @@
 
 <body>
 
-    <div id="hud">
-        <div class="brand">Icha Khel</div>
-        <div id="status">
-            <div><b>Controllers:</b> <span id="ctrl-status">searching…</span></div>
-            <div><b>Locomotion:</b> right thumbstick teleport, trigger to grab</div>
+    <!-- Header HUD -->
+    <div id="hud-header">
+        <div class="brand-container">
+            <div class="brand-logo">🏀</div>
+            <div>
+                <div class="brand-title">Icha Khel — Youth Athletic Park</div>
+                <div class="brand-sub">Pillar 1: Adaptive Sports & Confidence Building</div>
+            </div>
+        </div>
+
+        <div class="score-display">
+            <div class="score-item">
+                <span class="score-label">Total Score</span>
+                <span id="score-val" class="score-val">0</span>
+            </div>
+            <div style="width: 1px; height: 24px; background: rgba(255,255,255,0.15);"></div>
+            <div class="score-item">
+                <span class="score-label">Streak</span>
+                <span id="streak-val" class="score-val" style="color: var(--accent-orange);">0 🔥</span>
+            </div>
         </div>
     </div>
 
-    <div id="enter-vr-hint">Put on your headset and click "Enter VR" (bottom right) — built for Meta Quest 3S</div>
+    <!-- Sports Selector Bar -->
+    <div id="sports-selector">
+        <button class="station-btn active" onclick="selectStation('basketball')">
+            <span>🏀</span> Adaptive Basketball
+        </button>
+        <button class="station-btn" onclick="selectStation('slalom')">
+            <span>🛩️</span> Slalom Glider Course
+        </button>
+        <button class="station-btn" onclick="selectStation('archery')">
+            <span>🎯</span> Precision Archery
+        </button>
+        <button class="station-btn" onclick="selectStation('bowling')">
+            <span>🎳</span> Ramp Bowling
+        </button>
+    </div>
+
+    <!-- Accessibility Dock -->
+    <div id="accessibility-dock">
+        <div class="dock-title">
+            <span>Adaptive Input Engine</span>
+            <span style="color: var(--accent-lime); font-size: 10px;">ONLINE</span>
+        </div>
+
+        <div class="toggle-row">
+            <span>👁️ Gaze Dwell Fuse (1.2s)</span>
+            <label class="switch">
+                <input type="checkbox" id="gaze-toggle" checked onchange="toggleGaze(this.checked)">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="toggle-row">
+            <span>🔘 Single-Switch Auto-Scan</span>
+            <label class="switch">
+                <input type="checkbox" id="switch-toggle" onchange="toggleSingleSwitch(this.checked)">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="toggle-row">
+            <span>♿ Seated Height (1.1m)</span>
+            <label class="switch">
+                <input type="checkbox" id="seated-toggle" onchange="toggleSeated(this.checked)">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="toggle-row">
+            <span>🎯 Auto-Aim Assistance</span>
+            <label class="switch">
+                <input type="checkbox" id="aim-toggle" checked onchange="toggleAutoAim(this.checked)">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Single Switch Control Bar -->
+    <div id="single-switch-bar">
+        <span>Single-Switch Action: Press <span class="key-badge">SPACEBAR</span> or Tap Screen</span>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="feedback-toast">GREAT SHOT! +50 PTS</div>
+
     <div id="comfort-vignette"></div>
 
-    <a-scene background="color: #0b0d16" fog="type: exponential; color: #0b0d16; density: 0.015"
+    <!-- ================================================================= -->
+    <!--  A-FRAME 3D ADAPTIVE SPORTS PARK SCENE                           -->
+    <!-- ================================================================= -->
+    <a-scene 
+        background="color: #060811"
         renderer="colorManagement: true; physicallyCorrectLights: true; antialias: true"
-        vr-mode-ui="enterVRButton: #enter-vr-btn">
+        vr-mode-ui="enterVRButton: #custom-vr-btn">
 
-        <a-assets>
-            <!-- Soft gradient sky texture, generated procedurally so no external image is needed -->
-            <canvas id="sky-canvas" width="2" height="512"></canvas>
-        </a-assets>
+        <!-- Environment Lighting & Stadium Backdrop -->
+        <a-entity id="env" environment="preset: starry; skyType: atmosphere; lighting: distant; ground: arena; groundColor: #1e1b4b; groundColor2: #0f172a; shadow: true"></a-entity>
 
-        <!-- ============================================================ -->
-        <!--  Environment: soft dreamy sky, ground, ambient + directional  -->
-        <!-- ============================================================ -->
-        <a-sky id="sky" radius="200" src="#sky-canvas"></a-sky>
+        <a-light type="ambient" color="#6366f1" intensity="0.85"></a-light>
+        <a-light type="directional" color="#ffedd5" intensity="1.3" position="-8 18 -6" light="castShadow: true"></a-light>
 
-        <a-light type="ambient" color="#4a4560" intensity="0.9"></a-light>
-        <a-light type="directional" color="#ffe3c2" intensity="0.55" position="-3 6 -2"
-            light="castShadow: true"></a-light>
-        <a-light type="hemisphere" color="#8fa8ff" ground-color="#2a2035" intensity="0.6"></a-light>
+        <!-- Dynamic Stadium Light Beams -->
+        <a-cylinder position="-12 6 -15" radius="0.1" height="15" color="#00f2fe" material="shader: flat; opacity: 0.3; transparent: true" rotation="15 0 20"></a-cylinder>
+        <a-cylinder position="12 6 -15" radius="0.1" height="15" color="#ff781f" material="shader: flat; opacity: 0.3; transparent: true" rotation="15 0 -20"></a-cylinder>
 
-        <a-plane id="ground" rotation="-90 0 0" width="60" height="60" color="#232838"
-            material="roughness: 0.95; metalness: 0.05" shadow="receive: true" class="teleport-ground">
-        </a-plane>
+        <!-- =============================================================== -->
+        <!-- STATION 1: ADAPTIVE BASKETBALL HOOP SHOT                        -->
+        <!-- =============================================================== -->
+        <a-entity id="station-basketball" visible="true" position="0 0 0">
+            <!-- Basketball Backboard & Moving Ring -->
+            <a-entity id="hoop-assembly" position="0 0 -8">
+                <!-- Backboard -->
+                <a-box position="0 4 0" width="3.6" height="2.4" depth="0.1" color="#1e293b" material="metalness: 0.6; roughness: 0.2">
+                    <a-plane position="0 0 0.06" width="1.4" height="1.0" color="#00f2fe" material="shader: flat; wireframe: true"></a-plane>
+                </a-box>
+                
+                <!-- Rim Hoop (Interactive Target) -->
+                <a-torus id="hoop-rim" position="0 3.1 0.8" rotation="90 0 0" radius="0.7" radius-tubular="0.06" color="#ff781f" class="sports-target" onclick="shootBasketball()">
+                    <!-- Glowing Target Beacon -->
+                    <a-ring radius-inner="0.6" radius-outer="0.75" color="#00f2fe" material="shader: flat; opacity: 0.8; transparent: true"
+                            animation="property: scale; dir: alternate; dur: 1000; easing: easeInOutSine; loop: true; to: 1.15 1.15 1.15">
+                    </a-ring>
+                    <a-text value="AIM & LAUNCH" position="0 1.0 0" align="center" scale="1.4 1.4 1.4" color="#00f2fe" font="kelsonsans"></a-text>
+                </a-torus>
 
-        <!-- soft grid overlay for spatial legibility -->
-        <a-entity geometry="primitive: plane; width: 60; height: 60" rotation="-90 0 0" position="0 0.01 0"
-            material="shader: flat; src: ; color: #3a4160; wireframe: true; wireframeLinewidth: 1; opacity: 0.25; transparent: true">
+                <a-cylinder position="0 2 -0.2" radius="0.15" height="4" color="#475569"></a-cylinder>
+            </a-entity>
+
+            <!-- Launcher Stand & Basketball -->
+            <a-entity position="0 0 -3">
+                <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e1b4b" material="metalness: 0.8">
+                    <a-text value="SINGLE-SWITCH LAUNCHER" position="0 0.55 0" align="center" scale="0.7 0.7 0.7" color="#ffb347"></a-text>
+                </a-cylinder>
+
+                <a-sphere id="basketball-mesh" position="0 1.1 0" radius="0.45" color="#ff781f" material="roughness: 0.6" class="sports-target" onclick="shootBasketball()"
+                          animation__float="property: position; dir: alternate; dur: 1200; easing: easeInOutSine; loop: true; to: 0 1.25 0">
+                </a-sphere>
+            </a-entity>
         </a-entity>
 
-        <!-- ============================================================ -->
-        <!--  Placeholder "Adaptive Athletic Park" world objects            -->
-        <!-- ============================================================ -->
-        <a-entity id="world-objects">
-            <a-sphere position="-3 1.2 -6" radius="0.9" color="#ff8c69" material="roughness: 0.4; metalness: 0.1"
-                shadow="cast: true"
-                animation="property: position; dir: alternate; dur: 3000; easing: easeInOutSine; to: -3 1.7 -6; loop: true">
+
+        <!-- =============================================================== -->
+        <!-- STATION 2: SLALOM GLIDER COURSE                                 -->
+        <!-- =============================================================== -->
+        <a-entity id="station-slalom" visible="false" position="0 0 0">
+            <!-- Slalom Gate 1 -->
+            <a-entity position="-4 0 -6" class="sports-target" onclick="passSlalomGate(this, 'Gate 1')">
+                <a-torus radius="1.4" radius-tubular="0.08" color="#00f2fe" position="0 1.8 0"
+                         animation="property: rotation; to: 0 360 0; dur: 6000; easing: linear; loop: true">
+                    <a-text value="GATE 1: GAZE BOOST" position="0 1.8 0" align="center" color="#00f2fe" width="6"></a-text>
+                </a-torus>
+            </a-entity>
+
+            <!-- Slalom Gate 2 -->
+            <a-entity position="0 0 -10" class="sports-target" onclick="passSlalomGate(this, 'Gate 2')">
+                <a-torus radius="1.4" radius-tubular="0.08" color="#ff781f" position="0 2.2 0"
+                         animation="property: rotation; to: 0 -360 0; dur: 6000; easing: linear; loop: true">
+                    <a-text value="GATE 2: PRECISION" position="0 1.8 0" align="center" color="#ff781f" width="6"></a-text>
+                </a-torus>
+            </a-entity>
+
+            <!-- Slalom Gate 3 -->
+            <a-entity position="4 0 -6" class="sports-target" onclick="passSlalomGate(this, 'Gate 3')">
+                <a-torus radius="1.4" radius-tubular="0.08" color="#4ade80" position="0 1.8 0"
+                         animation="property: rotation; to: 0 360 0; dur: 6000; easing: linear; loop: true">
+                    <a-text value="GATE 3: FINISH" position="0 1.8 0" align="center" color="#4ade80" width="6"></a-text>
+                </a-torus>
+            </a-entity>
+        </a-entity>
+
+
+        <!-- =============================================================== -->
+        <!-- STATION 3: PRECISION ARCHERY TARGETS                            -->
+        <!-- =============================================================== -->
+        <a-entity id="station-archery" visible="false" position="0 0 0">
+            <a-entity position="0 0 -8">
+                <!-- Concentric Bullseye Target -->
+                <a-cylinder position="0 2.2 0" rotation="90 0 0" radius="1.5" height="0.1" color="#ef4444" class="sports-target" onclick="shootArchery(100)">
+                    <a-cylinder position="0 0.06 0" radius="1.0" height="0.02" color="#ffffff"></a-cylinder>
+                    <a-cylinder position="0 0.08 0" radius="0.5" height="0.02" color="#3b82f6"></a-cylinder>
+                    <a-cylinder position="0 0.10 0" radius="0.2" height="0.02" color="#eab308"></a-cylinder>
+                    <a-text value="BULLSEYE 100 PTS" position="0 1.8 0" align="center" color="#eab308" width="7"></a-text>
+                </a-cylinder>
+                <a-box position="0 1 0" width="0.2" height="2" depth="0.2" color="#475569"></a-box>
+            </a-entity>
+
+            <!-- Arrow Bow Bowstand -->
+            <a-box position="0 0.5 -2.5" width="1" height="0.8" depth="0.5" color="#1e1b4b" class="sports-target" onclick="shootArchery(50)">
+                <a-text value="TAP TO RELEASE ARROW" position="0 0.5 0" align="center" color="#00f2fe" width="4"></a-text>
+            </a-box>
+        </a-entity>
+
+
+        <!-- =============================================================== -->
+        <!-- STATION 4: RAMP BOWLING ROLL                                    -->
+        <!-- =============================================================== -->
+        <a-entity id="station-bowling" visible="false" position="0 0 0">
+            <!-- Bowling Alley Ramp -->
+            <a-box position="0 0.1 -6" width="3" height="0.2" depth="8" color="#334155"></a-box>
+
+            <!-- Pins Grid -->
+            <a-entity id="pins-group" position="0 0.5 -9.5">
+                <a-cylinder position="-0.6 0.4 0" radius="0.15" height="0.8" color="#ffffff" class="sports-target" onclick="rollBowlingBall()"></a-cylinder>
+                <a-cylinder position="0 0.4 0" radius="0.15" height="0.8" color="#ffffff" class="sports-target" onclick="rollBowlingBall()"></a-cylinder>
+                <a-cylinder position="0.6 0.4 0" radius="0.15" height="0.8" color="#ffffff" class="sports-target" onclick="rollBowlingBall()"></a-cylinder>
+                <a-cylinder position="-0.3 0.4 0.6" radius="0.15" height="0.8" color="#ffffff" class="sports-target" onclick="rollBowlingBall()"></a-cylinder>
+                <a-cylinder position="0.3 0.4 0.6" radius="0.15" height="0.8" color="#ffffff" class="sports-target" onclick="rollBowlingBall()"></a-cylinder>
+                <a-cylinder position="0 0.4 1.2" radius="0.15" height="0.8" color="#ef4444" class="sports-target" onclick="rollBowlingBall()"></a-cylinder>
+            </a-entity>
+
+            <!-- Bowling Ball on Ramp -->
+            <a-sphere id="bowling-ball" position="0 0.6 -2.5" radius="0.35" color="#9d50bb" class="sports-target" onclick="rollBowlingBall()">
+                <a-text value="ROLL BALL" position="0 0.6 0" align="center" color="#9d50bb" width="4"></a-text>
             </a-sphere>
-
-            <a-box position="3 0.75 -7" width="1.5" height="1.5" depth="1.5" color="#7cc4ff" material="roughness: 0.5"
-                shadow="cast: true" animation="property: rotation; dur: 12000; easing: linear; to: 0 360 0; loop: true"
-                class="grabbable">
-            </a-box>
-
-            <a-cylinder position="0 1 -10" radius="0.6" height="2" color="#b98cff" material="roughness: 0.4"
-                shadow="cast: true">
-            </a-cylinder>
-
-            <a-torus position="-6 1.5 -4" radius="0.8" radius-tubular="0.12" color="#ffe08c" shadow="cast: true"
-                animation="property: rotation; dir: alternate; dur: 4000; to: 45 180 0; loop: true">
-            </a-torus>
-
-            <!-- simple raised platform, doubles as a teleport-target demo -->
-            <a-box position="6 0.25 -3" width="3" height="0.5" depth="3" color="#2f3550" class="teleport-ground"
-                shadow="receive: true">
-            </a-box>
         </a-entity>
 
-        <!-- ============================================================ -->
-        <!--  Player rig: camera + two Meta Quest 3S controllers           -->
-        <!-- ============================================================ -->
-        <a-entity id="rig" position="0 0 2" movement-controls="fly: false; speed: 0.12"
-            teleport-controls="cameraRig: #rig; teleportOrigin: #camera; button: trackpad; collisionEntities: .teleport-ground; type: parabolic; curveShootingSpeed: 6; landingMaxAngle: 45">
-            <a-entity id="camera" camera position="0 1.6 0" look-controls="pointerLockEnabled: true"
-                wasd-controls="acceleration: 40">
+
+        <!-- =============================================================== -->
+        <!-- PLAYER RIG & ACCESSIBLE LOCOMOTION                              -->
+        <!-- =============================================================== -->
+        <a-entity id="rig" position="0 0 0">
+            <a-entity id="camera" camera position="0 1.6 0" look-controls="pointerLockEnabled: false" wasd-controls="acceleration: 25">
+                <!-- Visual Gaze Dwell Reticle -->
+                <a-entity id="gaze-cursor" 
+                          cursor="fuse: true; fuseTimeout: 1200"
+                          position="0 0 -1"
+                          geometry="primitive: ring; radiusInner: 0.016; radiusOuter: 0.026"
+                          material="color: #00f2fe; shader: flat; opacity: 0.85"
+                          raycaster="objects: .sports-target">
+                </a-entity>
             </a-entity>
 
-            <!-- Left controller: Meta Quest 3S left touch controller.
-         oculus-touch-controls auto-maps to Quest hardware; hand="left"
-         selects the correct model/offset. Laser + teleport-controls
-         both attach here so the left stick/trigger can also steer. -->
-            <a-entity id="left-hand" oculus-touch-controls="hand: left; model: true" laser-controls="hand: left"
-                teleport-controls="cameraRig: #rig; teleportOrigin: #camera; button: thumbstick; collisionEntities: .teleport-ground; curveShootingSpeed: 6"
-                raycaster="objects: .grabbable; far: 10" line="color: #7cc4ff; opacity: 0.6">
+            <!-- Meta Quest 3S Controllers -->
+            <a-entity id="left-hand" oculus-touch-controls="hand: left" laser-controls="hand: left"
+                      raycaster="objects: .sports-target; far: 12" line="color: #00f2fe; opacity: 0.7">
             </a-entity>
-
-            <!-- Right controller: primary teleport + interaction hand -->
-            <a-entity id="right-hand" oculus-touch-controls="hand: right; model: true" laser-controls="hand: right"
-                teleport-controls="cameraRig: #rig; teleportOrigin: #camera; button: thumbstick; collisionEntities: .teleport-ground; curveShootingSpeed: 6"
-                raycaster="objects: .grabbable; far: 10" line="color: #ffb37c; opacity: 0.6">
+            <a-entity id="right-hand" oculus-touch-controls="hand: right" laser-controls="hand: right"
+                      raycaster="objects: .sports-target; far: 12" line="color: #ff781f; opacity: 0.7">
             </a-entity>
         </a-entity>
 
     </a-scene>
 
+    <!-- ================================================================= -->
+    <!--  ENGINE LOGIC & INTERACTION SCRIPTS                               -->
+    <!-- ================================================================= -->
     <script>
         // -------------------------------------------------------------
-        // Procedural sky gradient — dreamy dusk tone, no external asset
+        // Web Audio Synthesizer for Immediate Sound Effects
         // -------------------------------------------------------------
-        (function paintSky() {
-            const canvas = document.getElementById('sky-canvas');
-            const ctx = canvas.getContext('2d');
-            const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            grad.addColorStop(0, '#1b1636');
-            grad.addColorStop(0.45, '#4a3563');
-            grad.addColorStop(0.75, '#8a6a8f');
-            grad.addColorStop(1, '#d9a883');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-        })();
+        const AudioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-        const sceneEl = document.querySelector('a-scene');
-        const statusEl = document.getElementById('ctrl-status');
-        const hud = document.getElementById('hud');
-        const vrHint = document.getElementById('enter-vr-hint');
-        const vignette = document.getElementById('comfort-vignette');
+        function playSound(type) {
+            if (AudioCtx.state === 'suspended') AudioCtx.resume();
+            const osc = AudioCtx.createOscillator();
+            const gain = AudioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(AudioCtx.destination);
 
-        let controllersConnected = 0;
+            const now = AudioCtx.currentTime;
 
-        function updateStatus() {
-            statusEl.textContent = controllersConnected === 2
-                ? 'both connected'
-                : controllersConnected === 1
-                    ? '1 connected, searching…'
-                    : 'searching…';
+            if (type === 'swish') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); // A5
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            } else if (type === 'strike') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(200, now);
+                osc.frequency.exponentialRampToValueAtTime(600, now + 0.2);
+                gain.gain.setValueAtTime(0.4, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'click') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, now);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            }
         }
 
-        ['left-hand', 'right-hand'].forEach((id) => {
-            const el = document.getElementById(id);
+        // -------------------------------------------------------------
+        // Game State Management
+        // -------------------------------------------------------------
+        let totalScore = 0;
+        let streak = 0;
+        let currentStation = 'basketball';
+        let autoAim = true;
 
-            el.addEventListener('controllerconnected', () => {
-                controllersConnected = Math.min(2, controllersConnected + 1);
-                updateStatus();
+        function updateScore(pts, msg) {
+            totalScore += pts;
+            streak++;
+            document.getElementById('score-val').textContent = totalScore;
+            document.getElementById('streak-val').textContent = `${streak} 🔥`;
+
+            showToast(msg || `+${pts} PTS!`);
+        }
+
+        function showToast(text) {
+            const toast = document.getElementById('feedback-toast');
+            toast.textContent = text;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 1600);
+        }
+
+        // -------------------------------------------------------------
+        // Station Selector
+        // -------------------------------------------------------------
+        function selectStation(stationKey) {
+            playSound('click');
+            currentStation = stationKey;
+
+            document.querySelectorAll('.station-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            ['basketball', 'slalom', 'archery', 'bowling'].forEach(s => {
+                document.getElementById(`station-${s}`).setAttribute('visible', s === stationKey);
             });
 
-            el.addEventListener('controllerdisconnected', () => {
-                controllersConnected = Math.max(0, controllersConnected - 1);
-                updateStatus();
-            });
-
-            // ---- Meta Quest 3S button bindings ----
-            // Trigger: primary select (grab / activate a .grabbable object)
-            el.addEventListener('triggerdown', () => {
-                const intersected = el.components.raycaster && el.components.raycaster.intersectedEls[0];
-                if (intersected) {
-                    intersected.setAttribute('animation__pulse',
-                        'property: scale; from: 1 1 1; to: 1.15 1.15 1.15; dur: 120; dir: alternate; loop: 2');
-                }
-            });
-
-            // Grip: reserved for future "grab and carry" mechanic
-            el.addEventListener('gripdown', () => {
-                el.setAttribute('line', 'color', '#ffffff');
-            });
-            el.addEventListener('gripup', () => {
-                el.setAttribute('line', 'color', id === 'left-hand' ? '#7cc4ff' : '#ffb37c');
-            });
-
-            // A/X button (or B/Y on right/left) — quick "recenter" style action stub
-            el.addEventListener('abuttondown', () => flashVignette());
-            el.addEventListener('xbuttondown', () => flashVignette());
-
-            // Thumbstick-driven teleport already handled by teleport-controls;
-            // show the comfort vignette while a teleport is in flight.
-            el.addEventListener('teleported', () => flashVignette());
-        });
+            if (singleSwitchEnabled) updateSwitchTargets();
+            flashVignette();
+        }
 
         function flashVignette() {
-            vignette.classList.add('active');
-            setTimeout(() => vignette.classList.remove('active'), 250);
+            const v = document.getElementById('comfort-vignette');
+            v.classList.add('active');
+            setTimeout(() => v.classList.remove('active'), 250);
         }
 
-        updateStatus();
+        // -------------------------------------------------------------
+        // Pillar 1 Sports Mechanics
+        // -------------------------------------------------------------
 
-        // Hide the 2D HUD once inside the headset, restore it on exit
-        sceneEl.addEventListener('enter-vr', () => {
-            hud.style.display = 'none';
-            vrHint.style.display = 'none';
+        // 1. Basketball Launcher
+        function shootBasketball() {
+            const ball = document.getElementById('basketball-mesh');
+            playSound('swish');
+
+            ball.setAttribute('animation__shot', 'property: position; from: 0 1.1 -3; to: 0 3.2 -7.2; dur: 750; easing: easeOutQuad');
+            
+            setTimeout(() => {
+                updateScore(50, 'SWISH! +50 PTS');
+                ball.setAttribute('position', '0 1.1 -3');
+                ball.removeAttribute('animation__shot');
+            }, 800);
+        }
+
+        // 2. Slalom Glider Gates
+        function passSlalomGate(el, gateName) {
+            playSound('swish');
+            el.setAttribute('animation__pass', 'property: scale; from: 1 1 1; to: 1.4 1.4 1.4; dur: 300; dir: alternate; loop: 2');
+            updateScore(30, `${gateName} PASSED! +30 PTS`);
+            setTimeout(() => el.removeAttribute('animation__pass'), 700);
+        }
+
+        // 3. Archery Target
+        function shootArchery(pts) {
+            playSound('strike');
+            updateScore(pts, `BULLSEYE! +${pts} PTS`);
+        }
+
+        // 4. Ramp Bowling Roll
+        function rollBowlingBall() {
+            const ball = document.getElementById('bowling-ball');
+            const pins = document.getElementById('pins-group');
+            playSound('strike');
+
+            ball.setAttribute('animation__roll', 'property: position; from: 0 0.6 -2.5; to: 0 0.5 -9.5; dur: 900; easing: easeInQuad');
+
+            setTimeout(() => {
+                pins.setAttribute('animation__knock', 'property: rotation; to: -45 30 0; dur: 400');
+                updateScore(100, 'STRIKE! ALL PINS DOWN +100 PTS');
+                setTimeout(() => {
+                    ball.setAttribute('position', '0 0.6 -2.5');
+                    ball.removeAttribute('animation__roll');
+                    pins.setAttribute('rotation', '0 0 0');
+                    pins.removeAttribute('animation__knock');
+                }, 1200);
+            }, 950);
+        }
+
+        // -------------------------------------------------------------
+        // Single Switch & Accessibility Engine
+        // -------------------------------------------------------------
+        let gazeEnabled = true;
+        let singleSwitchEnabled = false;
+        let switchTargets = [];
+        let switchIndex = 0;
+
+        function toggleGaze(enabled) {
+            gazeEnabled = enabled;
+            const cursor = document.getElementById('gaze-cursor');
+            cursor.setAttribute('cursor', `fuse: ${enabled}; fuseTimeout: 1200`);
+            cursor.setAttribute('visible', enabled);
+            playSound('click');
+        }
+
+        function toggleSingleSwitch(enabled) {
+            singleSwitchEnabled = enabled;
+            playSound('click');
+
+            if (enabled) {
+                updateSwitchTargets();
+                highlightNextTarget();
+            } else {
+                clearHighlights();
+            }
+        }
+
+        function toggleSeated(seated) {
+            const camera = document.getElementById('camera');
+            camera.setAttribute('position', `0 ${seated ? 1.1 : 1.6} 0`);
+            playSound('click');
+        }
+
+        function toggleAutoAim(enabled) {
+            autoAim = enabled;
+            playSound('click');
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && singleSwitchEnabled) {
+                e.preventDefault();
+                activateTarget();
+            }
         });
-        sceneEl.addEventListener('exit-vr', () => {
-            hud.style.display = 'flex';
-            vrHint.style.display = 'block';
+
+        window.addEventListener('touchstart', () => {
+            if (singleSwitchEnabled) activateTarget();
+        });
+
+        function updateSwitchTargets() {
+            switchTargets = Array.from(document.querySelectorAll(`#station-${currentStation} .sports-target`));
+            switchIndex = 0;
+        }
+
+        function highlightNextTarget() {
+            if (!singleSwitchEnabled || switchTargets.length === 0) return;
+            clearHighlights();
+
+            const target = switchTargets[switchIndex % switchTargets.length];
+            if (target) {
+                target.setAttribute('animation__pulse', 'property: scale; from: 1 1 1; to: 1.2 1.2 1.2; dur: 400; dir: alternate; loop: true');
+            }
+        }
+
+        function activateTarget() {
+            if (switchTargets.length === 0) return;
+            const target = switchTargets[switchIndex % switchTargets.length];
+            if (target) {
+                target.click();
+            }
+            switchIndex++;
+            highlightNextTarget();
+        }
+
+        function clearHighlights() {
+            switchTargets.forEach(t => t.removeAttribute('animation__pulse'));
+        }
+
+        // Setup Meta Quest controller triggers
+        document.querySelectorAll('#left-hand, #right-hand').forEach(hand => {
+            hand.addEventListener('triggerdown', () => {
+                if (singleSwitchEnabled) activateTarget();
+            });
         });
     </script>
-
 </body>
 
 </html>
