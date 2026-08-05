@@ -16,334 +16,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
-    <style>
-        :root {
-            --bg-dark: #060811;
-            --panel-bg: rgba(13, 17, 30, 0.8);
-            --accent-cyan: #00f2fe;
-            --accent-orange: #ff781f;
-            --accent-purple: #9d50bb;
-            --accent-lime: #4ade80;
-            --accent-gold: #ffb347;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-glow: rgba(0, 242, 254, 0.3);
-        }
-
-        * {
-            box-sizing: border-box;
-            user-select: none;
-        }
-
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background: var(--bg-dark);
-            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-            color: var(--text-main);
-        }
-
-        /* ------------------------------------------------------------- */
-        /* Glassmorphism Header & Scoreboard HUD                         */
-        /* ------------------------------------------------------------- */
-        #hud-header {
-            position: fixed;
-            top: 16px;
-            left: 20px;
-            right: 20px;
-            z-index: 100;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            pointer-events: none;
-        }
-
-        .brand-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: var(--panel-bg);
-            backdrop-filter: blur(14px);
-            border: 1px solid var(--border-glow);
-            padding: 10px 18px;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-            pointer-events: auto;
-        }
-
-        .brand-logo {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--accent-orange), var(--accent-cyan));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 16px;
-            color: #fff;
-            box-shadow: 0 0 16px rgba(255, 120, 31, 0.4);
-        }
-
-        .brand-title {
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-            background: linear-gradient(90deg, #ffffff, var(--accent-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .brand-sub {
-            font-size: 11px;
-            color: var(--accent-gold);
-            font-weight: 600;
-            letter-spacing: 0.05em;
-        }
-
-        /* Scoreboard Display */
-        .score-display {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            background: var(--panel-bg);
-            backdrop-filter: blur(14px);
-            border: 1px solid rgba(74, 222, 128, 0.3);
-            padding: 8px 20px;
-            border-radius: 20px;
-            box-shadow: 0 0 20px rgba(74, 222, 128, 0.2);
-            pointer-events: auto;
-        }
-
-        .score-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .score-label {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-muted);
-            font-weight: 700;
-        }
-
-        .score-val {
-            font-size: 20px;
-            font-weight: 800;
-            color: var(--accent-lime);
-            text-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
-        }
-
-        /* ------------------------------------------------------------- */
-        /* Sports Station Nav Tabs (Top Center)                           */
-        /* ------------------------------------------------------------- */
-        #sports-selector {
-            position: fixed;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 100;
-            display: flex;
-            gap: 8px;
-            background: var(--panel-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 6px;
-            border-radius: 24px;
-            pointer-events: auto;
-        }
-
-        .station-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            padding: 8px 16px;
-            border-radius: 16px;
-            font-family: inherit;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .station-btn:hover {
-            color: #fff;
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .station-btn.active {
-            color: #fff;
-            background: linear-gradient(135deg, var(--accent-orange), var(--accent-purple));
-            border: 1px solid var(--accent-orange);
-            box-shadow: 0 0 16px rgba(255, 120, 31, 0.4);
-        }
-
-        /* ------------------------------------------------------------- */
-        /* Accessibility Controls Dock (Bottom Left)                      */
-        /* ------------------------------------------------------------- */
-        #accessibility-dock {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            z-index: 100;
-            background: var(--panel-bg);
-            backdrop-filter: blur(14px);
-            border: 1px solid var(--border-glow);
-            border-radius: 20px;
-            padding: 14px 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            width: 300px;
-            pointer-events: auto;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
-        }
-
-        .dock-title {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--accent-cyan);
-            font-weight: 800;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .toggle-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-            color: var(--text-main);
-            font-weight: 600;
-        }
-
-        /* Custom Toggle Switch */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 40px;
-            height: 22px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            inset: 0;
-            background-color: #334155;
-            transition: .3s;
-            border-radius: 20px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .3s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: var(--accent-cyan);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(18px);
-        }
-
-        /* ------------------------------------------------------------- */
-        /* Single-Switch Overlay & Feedback Prompts                       */
-        /* ------------------------------------------------------------- */
-        #single-switch-bar {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 100;
-            background: var(--panel-bg);
-            backdrop-filter: blur(14px);
-            border: 1px solid var(--accent-gold);
-            border-radius: 18px;
-            padding: 12px 20px;
-            font-size: 13px;
-            color: var(--accent-gold);
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 0 24px rgba(255, 179, 71, 0.25);
-            pointer-events: auto;
-        }
-
-        .key-badge {
-            background: rgba(255, 179, 71, 0.2);
-            padding: 4px 10px;
-            border-radius: 8px;
-            border: 1px solid var(--accent-gold);
-            font-family: monospace;
-            font-size: 14px;
-        }
-
-        #feedback-toast {
-            position: fixed;
-            top: 140px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 150;
-            background: rgba(74, 222, 128, 0.9);
-            color: #060811;
-            font-weight: 800;
-            padding: 10px 24px;
-            border-radius: 30px;
-            font-size: 15px;
-            box-shadow: 0 0 30px rgba(74, 222, 128, 0.6);
-            opacity: 0;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: none;
-        }
-
-        #feedback-toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(10px);
-        }
-
-        #comfort-vignette {
-            position: fixed;
-            inset: 0;
-            z-index: 50;
-            pointer-events: none;
-            background: radial-gradient(circle, rgba(0, 0, 0, 0) 35%, rgba(6, 8, 17, 0.95) 100%);
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-
-        #comfort-vignette.active {
-            opacity: 1;
-        }
-
-        a-scene {
-            width: 100%;
-            height: 100%;
-        }
-    </style>
+    <!-- External Modular Stylesheet -->
+    <link rel="stylesheet" href="css/styles.css" />
 </head>
 
 <body>
@@ -455,20 +129,14 @@
         <a-cylinder position="-12 6 -15" radius="0.1" height="15" color="#00f2fe" material="shader: flat; opacity: 0.3; transparent: true" rotation="15 0 20"></a-cylinder>
         <a-cylinder position="12 6 -15" radius="0.1" height="15" color="#ff781f" material="shader: flat; opacity: 0.3; transparent: true" rotation="15 0 -20"></a-cylinder>
 
-        <!-- =============================================================== -->
-        <!-- STATION 1: ADAPTIVE BASKETBALL HOOP SHOT                        -->
-        <!-- =============================================================== -->
+        <!-- STATION 1: ADAPTIVE BASKETBALL HOOP SHOT -->
         <a-entity id="station-basketball" visible="true" position="0 0 0">
-            <!-- Basketball Backboard & Moving Ring -->
             <a-entity id="hoop-assembly" position="0 0 -8">
-                <!-- Backboard -->
                 <a-box position="0 4 0" width="3.6" height="2.4" depth="0.1" color="#1e293b" material="metalness: 0.6; roughness: 0.2">
                     <a-plane position="0 0 0.06" width="1.4" height="1.0" color="#00f2fe" material="shader: flat; wireframe: true"></a-plane>
                 </a-box>
                 
-                <!-- Rim Hoop (Interactive Target) -->
                 <a-torus id="hoop-rim" position="0 3.1 0.8" rotation="90 0 0" radius="0.7" radius-tubular="0.06" color="#ff781f" class="sports-target" onclick="shootBasketball()">
-                    <!-- Glowing Target Beacon -->
                     <a-ring radius-inner="0.6" radius-outer="0.75" color="#00f2fe" material="shader: flat; opacity: 0.8; transparent: true"
                             animation="property: scale; dir: alternate; dur: 1000; easing: easeInOutSine; loop: true; to: 1.15 1.15 1.15">
                     </a-ring>
@@ -478,7 +146,6 @@
                 <a-cylinder position="0 2 -0.2" radius="0.15" height="4" color="#475569"></a-cylinder>
             </a-entity>
 
-            <!-- Launcher Stand & Basketball -->
             <a-entity position="0 0 -3">
                 <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e1b4b" material="metalness: 0.8">
                     <a-text value="SINGLE-SWITCH LAUNCHER" position="0 0.55 0" align="center" scale="0.7 0.7 0.7" color="#ffb347"></a-text>
@@ -490,12 +157,8 @@
             </a-entity>
         </a-entity>
 
-
-        <!-- =============================================================== -->
-        <!-- STATION 2: SLALOM GLIDER COURSE                                 -->
-        <!-- =============================================================== -->
+        <!-- STATION 2: SLALOM GLIDER COURSE -->
         <a-entity id="station-slalom" visible="false" position="0 0 0">
-            <!-- Slalom Gate 1 -->
             <a-entity position="-4 0 -6" class="sports-target" onclick="passSlalomGate(this, 'Gate 1')">
                 <a-torus radius="1.4" radius-tubular="0.08" color="#00f2fe" position="0 1.8 0"
                          animation="property: rotation; to: 0 360 0; dur: 6000; easing: linear; loop: true">
@@ -503,7 +166,6 @@
                 </a-torus>
             </a-entity>
 
-            <!-- Slalom Gate 2 -->
             <a-entity position="0 0 -10" class="sports-target" onclick="passSlalomGate(this, 'Gate 2')">
                 <a-torus radius="1.4" radius-tubular="0.08" color="#ff781f" position="0 2.2 0"
                          animation="property: rotation; to: 0 -360 0; dur: 6000; easing: linear; loop: true">
@@ -511,7 +173,6 @@
                 </a-torus>
             </a-entity>
 
-            <!-- Slalom Gate 3 -->
             <a-entity position="4 0 -6" class="sports-target" onclick="passSlalomGate(this, 'Gate 3')">
                 <a-torus radius="1.4" radius-tubular="0.08" color="#4ade80" position="0 1.8 0"
                          animation="property: rotation; to: 0 360 0; dur: 6000; easing: linear; loop: true">
@@ -520,13 +181,9 @@
             </a-entity>
         </a-entity>
 
-
-        <!-- =============================================================== -->
-        <!-- STATION 3: PRECISION ARCHERY TARGETS                            -->
-        <!-- =============================================================== -->
+        <!-- STATION 3: PRECISION ARCHERY TARGETS -->
         <a-entity id="station-archery" visible="false" position="0 0 0">
             <a-entity position="0 0 -8">
-                <!-- Concentric Bullseye Target -->
                 <a-cylinder position="0 2.2 0" rotation="90 0 0" radius="1.5" height="0.1" color="#ef4444" class="sports-target" onclick="shootArchery(100)">
                     <a-cylinder position="0 0.06 0" radius="1.0" height="0.02" color="#ffffff"></a-cylinder>
                     <a-cylinder position="0 0.08 0" radius="0.5" height="0.02" color="#3b82f6"></a-cylinder>
@@ -536,21 +193,15 @@
                 <a-box position="0 1 0" width="0.2" height="2" depth="0.2" color="#475569"></a-box>
             </a-entity>
 
-            <!-- Arrow Bow Bowstand -->
             <a-box position="0 0.5 -2.5" width="1" height="0.8" depth="0.5" color="#1e1b4b" class="sports-target" onclick="shootArchery(50)">
                 <a-text value="TAP TO RELEASE ARROW" position="0 0.5 0" align="center" color="#00f2fe" width="4"></a-text>
             </a-box>
         </a-entity>
 
-
-        <!-- =============================================================== -->
-        <!-- STATION 4: RAMP BOWLING ROLL                                    -->
-        <!-- =============================================================== -->
+        <!-- STATION 4: RAMP BOWLING ROLL -->
         <a-entity id="station-bowling" visible="false" position="0 0 0">
-            <!-- Bowling Alley Ramp -->
             <a-box position="0 0.1 -6" width="3" height="0.2" depth="8" color="#334155"></a-box>
 
-            <!-- Pins Grid -->
             <a-entity id="pins-group" position="0 0.5 -9.5">
                 <a-cylinder position="-0.6 0.4 0" radius="0.15" height="0.8" color="#ffffff" class="sports-target" onclick="rollBowlingBall()"></a-cylinder>
                 <a-cylinder position="0 0.4 0" radius="0.15" height="0.8" color="#ffffff" class="sports-target" onclick="rollBowlingBall()"></a-cylinder>
@@ -560,19 +211,14 @@
                 <a-cylinder position="0 0.4 1.2" radius="0.15" height="0.8" color="#ef4444" class="sports-target" onclick="rollBowlingBall()"></a-cylinder>
             </a-entity>
 
-            <!-- Bowling Ball on Ramp -->
             <a-sphere id="bowling-ball" position="0 0.6 -2.5" radius="0.35" color="#9d50bb" class="sports-target" onclick="rollBowlingBall()">
                 <a-text value="ROLL BALL" position="0 0.6 0" align="center" color="#9d50bb" width="4"></a-text>
             </a-sphere>
         </a-entity>
 
-
-        <!-- =============================================================== -->
-        <!-- PLAYER RIG & ACCESSIBLE LOCOMOTION                              -->
-        <!-- =============================================================== -->
+        <!-- PLAYER RIG & ACCESSIBLE LOCOMOTION -->
         <a-entity id="rig" position="0 0 0">
             <a-entity id="camera" camera position="0 1.6 0" look-controls="pointerLockEnabled: false" wasd-controls="acceleration: 25">
-                <!-- Visual Gaze Dwell Reticle -->
                 <a-entity id="gaze-cursor" 
                           cursor="fuse: true; fuseTimeout: 1200"
                           position="0 0 -1"
@@ -582,7 +228,6 @@
                 </a-entity>
             </a-entity>
 
-            <!-- Meta Quest 3S Controllers -->
             <a-entity id="left-hand" oculus-touch-controls="hand: left" laser-controls="hand: left"
                       raycaster="objects: .sports-target; far: 12" line="color: #00f2fe; opacity: 0.7">
             </a-entity>
@@ -593,236 +238,11 @@
 
     </a-scene>
 
-    <!-- ================================================================= -->
-    <!--  ENGINE LOGIC & INTERACTION SCRIPTS                               -->
-    <!-- ================================================================= -->
-    <script>
-        // -------------------------------------------------------------
-        // Web Audio Synthesizer for Immediate Sound Effects
-        // -------------------------------------------------------------
-        const AudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-        function playSound(type) {
-            if (AudioCtx.state === 'suspended') AudioCtx.resume();
-            const osc = AudioCtx.createOscillator();
-            const gain = AudioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(AudioCtx.destination);
-
-            const now = AudioCtx.currentTime;
-
-            if (type === 'swish') {
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(523.25, now); // C5
-                osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); // A5
-                gain.gain.setValueAtTime(0.3, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-                osc.start(now);
-                osc.stop(now + 0.25);
-            } else if (type === 'strike') {
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(200, now);
-                osc.frequency.exponentialRampToValueAtTime(600, now + 0.2);
-                gain.gain.setValueAtTime(0.4, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                osc.start(now);
-                osc.stop(now + 0.3);
-            } else if (type === 'click') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(600, now);
-                gain.gain.setValueAtTime(0.2, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
-                osc.start(now);
-                osc.stop(now + 0.08);
-            }
-        }
-
-        // -------------------------------------------------------------
-        // Game State Management
-        // -------------------------------------------------------------
-        let totalScore = 0;
-        let streak = 0;
-        let currentStation = 'basketball';
-        let autoAim = true;
-
-        function updateScore(pts, msg) {
-            totalScore += pts;
-            streak++;
-            document.getElementById('score-val').textContent = totalScore;
-            document.getElementById('streak-val').textContent = `${streak} 🔥`;
-
-            showToast(msg || `+${pts} PTS!`);
-        }
-
-        function showToast(text) {
-            const toast = document.getElementById('feedback-toast');
-            toast.textContent = text;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 1600);
-        }
-
-        // -------------------------------------------------------------
-        // Station Selector
-        // -------------------------------------------------------------
-        function selectStation(stationKey) {
-            playSound('click');
-            currentStation = stationKey;
-
-            document.querySelectorAll('.station-btn').forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-
-            ['basketball', 'slalom', 'archery', 'bowling'].forEach(s => {
-                document.getElementById(`station-${s}`).setAttribute('visible', s === stationKey);
-            });
-
-            if (singleSwitchEnabled) updateSwitchTargets();
-            flashVignette();
-        }
-
-        function flashVignette() {
-            const v = document.getElementById('comfort-vignette');
-            v.classList.add('active');
-            setTimeout(() => v.classList.remove('active'), 250);
-        }
-
-        // -------------------------------------------------------------
-        // Pillar 1 Sports Mechanics
-        // -------------------------------------------------------------
-
-        // 1. Basketball Launcher
-        function shootBasketball() {
-            const ball = document.getElementById('basketball-mesh');
-            playSound('swish');
-
-            ball.setAttribute('animation__shot', 'property: position; from: 0 1.1 -3; to: 0 3.2 -7.2; dur: 750; easing: easeOutQuad');
-            
-            setTimeout(() => {
-                updateScore(50, 'SWISH! +50 PTS');
-                ball.setAttribute('position', '0 1.1 -3');
-                ball.removeAttribute('animation__shot');
-            }, 800);
-        }
-
-        // 2. Slalom Glider Gates
-        function passSlalomGate(el, gateName) {
-            playSound('swish');
-            el.setAttribute('animation__pass', 'property: scale; from: 1 1 1; to: 1.4 1.4 1.4; dur: 300; dir: alternate; loop: 2');
-            updateScore(30, `${gateName} PASSED! +30 PTS`);
-            setTimeout(() => el.removeAttribute('animation__pass'), 700);
-        }
-
-        // 3. Archery Target
-        function shootArchery(pts) {
-            playSound('strike');
-            updateScore(pts, `BULLSEYE! +${pts} PTS`);
-        }
-
-        // 4. Ramp Bowling Roll
-        function rollBowlingBall() {
-            const ball = document.getElementById('bowling-ball');
-            const pins = document.getElementById('pins-group');
-            playSound('strike');
-
-            ball.setAttribute('animation__roll', 'property: position; from: 0 0.6 -2.5; to: 0 0.5 -9.5; dur: 900; easing: easeInQuad');
-
-            setTimeout(() => {
-                pins.setAttribute('animation__knock', 'property: rotation; to: -45 30 0; dur: 400');
-                updateScore(100, 'STRIKE! ALL PINS DOWN +100 PTS');
-                setTimeout(() => {
-                    ball.setAttribute('position', '0 0.6 -2.5');
-                    ball.removeAttribute('animation__roll');
-                    pins.setAttribute('rotation', '0 0 0');
-                    pins.removeAttribute('animation__knock');
-                }, 1200);
-            }, 950);
-        }
-
-        // -------------------------------------------------------------
-        // Single Switch & Accessibility Engine
-        // -------------------------------------------------------------
-        let gazeEnabled = true;
-        let singleSwitchEnabled = false;
-        let switchTargets = [];
-        let switchIndex = 0;
-
-        function toggleGaze(enabled) {
-            gazeEnabled = enabled;
-            const cursor = document.getElementById('gaze-cursor');
-            cursor.setAttribute('cursor', `fuse: ${enabled}; fuseTimeout: 1200`);
-            cursor.setAttribute('visible', enabled);
-            playSound('click');
-        }
-
-        function toggleSingleSwitch(enabled) {
-            singleSwitchEnabled = enabled;
-            playSound('click');
-
-            if (enabled) {
-                updateSwitchTargets();
-                highlightNextTarget();
-            } else {
-                clearHighlights();
-            }
-        }
-
-        function toggleSeated(seated) {
-            const camera = document.getElementById('camera');
-            camera.setAttribute('position', `0 ${seated ? 1.1 : 1.6} 0`);
-            playSound('click');
-        }
-
-        function toggleAutoAim(enabled) {
-            autoAim = enabled;
-            playSound('click');
-        }
-
-        window.addEventListener('keydown', (e) => {
-            if (e.code === 'Space' && singleSwitchEnabled) {
-                e.preventDefault();
-                activateTarget();
-            }
-        });
-
-        window.addEventListener('touchstart', () => {
-            if (singleSwitchEnabled) activateTarget();
-        });
-
-        function updateSwitchTargets() {
-            switchTargets = Array.from(document.querySelectorAll(`#station-${currentStation} .sports-target`));
-            switchIndex = 0;
-        }
-
-        function highlightNextTarget() {
-            if (!singleSwitchEnabled || switchTargets.length === 0) return;
-            clearHighlights();
-
-            const target = switchTargets[switchIndex % switchTargets.length];
-            if (target) {
-                target.setAttribute('animation__pulse', 'property: scale; from: 1 1 1; to: 1.2 1.2 1.2; dur: 400; dir: alternate; loop: true');
-            }
-        }
-
-        function activateTarget() {
-            if (switchTargets.length === 0) return;
-            const target = switchTargets[switchIndex % switchTargets.length];
-            if (target) {
-                target.click();
-            }
-            switchIndex++;
-            highlightNextTarget();
-        }
-
-        function clearHighlights() {
-            switchTargets.forEach(t => t.removeAttribute('animation__pulse'));
-        }
-
-        // Setup Meta Quest controller triggers
-        document.querySelectorAll('#left-hand, #right-hand').forEach(hand => {
-            hand.addEventListener('triggerdown', () => {
-                if (singleSwitchEnabled) activateTarget();
-            });
-        });
-    </script>
+    <!-- External Modular JavaScript Files -->
+    <script src="js/audio.js"></script>
+    <script src="js/sports.js"></script>
+    <script src="js/accessibility.js"></script>
+    <script src="js/app.js"></script>
 </body>
 
 </html>
