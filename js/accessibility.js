@@ -83,9 +83,26 @@ window.addEventListener('touchstart', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('#left-hand, #right-hand').forEach(hand => {
-        hand.addEventListener('triggerdown', () => {
-            if (singleSwitchEnabled) activateTarget();
+    // Quest 3 controller triggers as single-switch input
+    const setupVRTriggers = () => {
+        document.querySelectorAll('#left-hand, #right-hand').forEach(hand => {
+            hand.addEventListener('triggerdown', () => {
+                if (singleSwitchEnabled) activateTarget();
+            });
+            // Grip can also serve as switch input for accessibility
+            hand.addEventListener('gripdown', () => {
+                if (singleSwitchEnabled) activateTarget();
+            });
         });
-    });
+    };
+
+    // A-Frame entities may not be ready immediately — wait for scene
+    const scene = document.querySelector('a-scene');
+    if (scene) {
+        if (scene.hasLoaded) {
+            setupVRTriggers();
+        } else {
+            scene.addEventListener('loaded', setupVRTriggers);
+        }
+    }
 });

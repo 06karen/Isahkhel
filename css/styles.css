@@ -640,3 +640,76 @@ a-scene {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--text-secondary);
 }
+
+/* =============================================================
+   ENTER VR BUTTON — Prominent Call to Action
+   ============================================================= */
+#enter-vr-btn {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    background: linear-gradient(135deg, var(--primary), #a855f7, var(--coral));
+    background-size: 200% 200%;
+    animation: gradientShift 4s ease infinite, slideUpFade 0.8s var(--ease-out) 0.5s both;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 16px 36px;
+    border-radius: var(--radius-pill);
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    box-shadow: 0 8px 32px var(--primary-glow), 0 0 60px rgba(124, 58, 237, 0.15);
+    transition: all var(--duration-normal) var(--ease-out);
+    pointer-events: auto;
+}
+
+#enter-vr-btn:hover {
+    transform: translateX(-50%) translateY(-3px) scale(1.05);
+    box-shadow: 0 12px 40px var(--primary-glow), 0 0 80px rgba(124, 58, 237, 0.25);
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+#enter-vr-btn:active {
+    transform: translateX(-50%) scale(0.97);
+}
+
+@keyframes gradientShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* =============================================================
+   VR MODE — Hide Desktop Overlays When in Headset
+   ============================================================= */
+.a-fullscreen #hud-header,
+.a-fullscreen #sports-selector,
+.a-fullscreen #accessibility-dock,
+.a-fullscreen #single-switch-bar,
+.a-fullscreen #enter-vr-btn,
+.a-fullscreen #feedback-toast {
+    display: none !important;
+}
+
+/* Override A-Frame's default VR button for a premium look */
+.a-enter-vr-button {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(var(--glass-blur)) !important;
+    border: 1px solid var(--border-glow) !important;
+    border-radius: var(--radius-md) !important;
+    padding: 12px 16px !important;
+    box-shadow: var(--shadow-md) !important;
+    transition: all var(--duration-normal) var(--ease-out) !important;
+    opacity: 0.85 !important;
+}
+
+.a-enter-vr-button:hover {
+    opacity: 1 !important;
+    border-color: var(--primary) !important;
+    box-shadow: var(--shadow-md), var(--shadow-glow) !important;
+    transform: scale(1.05) !important;
+}

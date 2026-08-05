@@ -11,15 +11,33 @@ function updateScore(pts, msg) {
     if (scoreVal) scoreVal.textContent = totalScore;
     if (streakVal) streakVal.textContent = `${streak} 🔥`;
 
+    // Sync VR 3D scoreboard
+    if (typeof updateVRScoreboard === 'function') {
+        updateVRScoreboard(totalScore, streak);
+    }
+
+    // Haptic feedback on score
+    if (typeof triggerHaptic === 'function') {
+        triggerHaptic('right', 0.6, 120);
+        triggerHaptic('left', 0.3, 80);
+    }
+
     showToast(msg || `+${pts} PTS!`);
 }
 
 function showToast(text) {
+    // Desktop HTML toast
     const toast = document.getElementById('feedback-toast');
-    if (!toast) return;
-    toast.textContent = text;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 1600);
+    if (toast) {
+        toast.textContent = text;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 1600);
+    }
+
+    // VR 3D floating toast
+    if (typeof showVRToast === 'function') {
+        showVRToast(text);
+    }
 }
 
 // 1. Basketball Shot Mechanics
