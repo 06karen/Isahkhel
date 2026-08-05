@@ -1,35 +1,105 @@
+/* =============================================================
+   ICHA KHEL — Premium Adaptive Sports Park
+   Design System: Midnight Luxe Sports-Tech
+   ============================================================= */
+
 :root {
-    --bg-dark: #060811;
-    --panel-bg: rgba(13, 17, 30, 0.8);
-    --accent-cyan: #00f2fe;
-    --accent-orange: #ff781f;
-    --accent-purple: #9d50bb;
-    --accent-lime: #4ade80;
-    --accent-gold: #ffb347;
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --border-glow: rgba(0, 242, 254, 0.3);
+    /* ── Core Palette ─────────────────────────────────────── */
+    --bg-deep:        #05070e;
+    --bg-surface:     #0a0e1a;
+    --bg-elevated:    #111827;
+
+    /* Glassmorphism Layers */
+    --glass-bg:       rgba(8, 12, 28, 0.72);
+    --glass-bg-hover: rgba(14, 20, 42, 0.85);
+    --glass-blur:     20px;
+
+    /* Primary: Violet → Rose gradient feel */
+    --primary:        #7c3aed;
+    --primary-light:  #a78bfa;
+    --primary-glow:   rgba(124, 58, 237, 0.35);
+
+    /* Secondary: Warm Champagne Gold */
+    --gold:           #f5c542;
+    --gold-soft:      #fde68a;
+    --gold-glow:      rgba(245, 197, 66, 0.25);
+
+    /* Accent: Electric Teal */
+    --teal:           #2dd4bf;
+    --teal-glow:      rgba(45, 212, 191, 0.3);
+
+    /* Success / Positive */
+    --emerald:        #34d399;
+    --emerald-glow:   rgba(52, 211, 153, 0.35);
+
+    /* Warm Accent */
+    --coral:          #fb7185;
+    --coral-glow:     rgba(251, 113, 133, 0.3);
+
+    /* Neutral Text */
+    --text-primary:   #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-tertiary:  #64748b;
+
+    /* Borders */
+    --border-subtle:  rgba(148, 163, 184, 0.08);
+    --border-glow:    rgba(124, 58, 237, 0.25);
+    --border-gold:    rgba(245, 197, 66, 0.25);
+
+    /* Shadows */
+    --shadow-sm:      0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md:      0 8px 32px rgba(0, 0, 0, 0.45);
+    --shadow-lg:      0 16px 48px rgba(0, 0, 0, 0.6);
+    --shadow-glow:    0 0 40px var(--primary-glow);
+
+    /* Spacing */
+    --radius-sm:      10px;
+    --radius-md:      16px;
+    --radius-lg:      24px;
+    --radius-pill:    100px;
+
+    /* Motion */
+    --ease-out:       cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-spring:    cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --duration-fast:  0.2s;
+    --duration-normal:0.35s;
 }
 
-* {
+/* ── Reset & Base ───────────────────────────────────────── */
+*, *::before, *::after {
     box-sizing: border-box;
-    user-select: none;
+    margin: 0;
+    padding: 0;
 }
 
 html, body {
-    margin: 0;
-    padding: 0;
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: var(--bg-dark);
-    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-    color: var(--text-main);
+    background: var(--bg-deep);
+    font-family: 'Inter', 'Outfit', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    color: var(--text-primary);
+    user-select: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-/* ------------------------------------------------------------- */
-/* Glassmorphism Header & Scoreboard HUD                         */
-/* ------------------------------------------------------------- */
+/* ── Ambient Background Gradient (visible behind A-Frame) ── */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+        radial-gradient(ellipse 80% 50% at 20% 80%, rgba(124, 58, 237, 0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 85% 20%, rgba(45, 212, 191, 0.06) 0%, transparent 70%),
+        var(--bg-deep);
+    pointer-events: none;
+}
+
+/* =============================================================
+   GLASSMORPHISM HEADER & SCOREBOARD HUD
+   ============================================================= */
 #hud-header {
     position: fixed;
     top: 16px;
@@ -40,89 +110,126 @@ html, body {
     justify-content: space-between;
     align-items: center;
     pointer-events: none;
+    animation: slideDownFade 0.6s var(--ease-out) both;
+}
+
+@keyframes slideDownFade {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 .brand-container {
     display: flex;
     align-items: center;
-    gap: 12px;
-    background: var(--panel-bg);
-    backdrop-filter: blur(14px);
-    border: 1px solid var(--border-glow);
-    padding: 10px 18px;
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    gap: 14px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+    border: 1px solid var(--border-subtle);
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
     pointer-events: auto;
+    transition: border-color var(--duration-normal) var(--ease-out),
+                box-shadow var(--duration-normal) var(--ease-out);
+}
+
+.brand-container:hover {
+    border-color: var(--border-glow);
+    box-shadow: var(--shadow-md), var(--shadow-glow);
 }
 
 .brand-logo {
-    width: 32px;
-    height: 32px;
-    background: linear-gradient(135deg, var(--accent-orange), var(--accent-cyan));
-    border-radius: 10px;
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--primary), var(--coral));
+    border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 800;
-    font-size: 16px;
-    color: #fff;
-    box-shadow: 0 0 16px rgba(255, 120, 31, 0.4);
+    font-size: 17px;
+    box-shadow: 0 4px 16px var(--primary-glow);
+    animation: logoPulse 3s ease-in-out infinite;
+}
+
+@keyframes logoPulse {
+    0%, 100% { box-shadow: 0 4px 16px var(--primary-glow); }
+    50%      { box-shadow: 0 4px 24px var(--coral-glow), 0 0 40px var(--primary-glow); }
 }
 
 .brand-title {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
-    letter-spacing: 0.04em;
-    background: linear-gradient(90deg, #ffffff, var(--accent-cyan));
+    letter-spacing: 0.02em;
+    background: linear-gradient(135deg, #ffffff 0%, var(--primary-light) 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .brand-sub {
-    font-size: 11px;
-    color: var(--accent-gold);
+    font-size: 10.5px;
+    color: var(--gold);
     font-weight: 600;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.9;
 }
 
-/* Scoreboard Display */
+/* ── Scoreboard ─────────────────────────────────────────── */
 .score-display {
     display: flex;
     align-items: center;
-    gap: 16px;
-    background: var(--panel-bg);
-    backdrop-filter: blur(14px);
-    border: 1px solid rgba(74, 222, 128, 0.3);
-    padding: 8px 20px;
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(74, 222, 128, 0.2);
+    gap: 20px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+    border: 1px solid var(--border-subtle);
+    padding: 10px 24px;
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-md);
     pointer-events: auto;
+    animation: slideDownFade 0.6s var(--ease-out) 0.1s both;
+    transition: border-color var(--duration-normal) var(--ease-out),
+                box-shadow var(--duration-normal) var(--ease-out);
+}
+
+.score-display:hover {
+    border-color: rgba(52, 211, 153, 0.2);
+    box-shadow: var(--shadow-md), 0 0 30px var(--emerald-glow);
 }
 
 .score-item {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 2px;
 }
 
 .score-label {
-    font-size: 10px;
+    font-size: 9px;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    color: var(--text-tertiary);
     font-weight: 700;
 }
 
 .score-val {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 800;
-    color: var(--accent-lime);
-    text-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+    color: var(--emerald);
+    text-shadow: 0 0 16px var(--emerald-glow);
+    font-variant-numeric: tabular-nums;
+    transition: transform var(--duration-fast) var(--ease-spring);
 }
 
-/* ------------------------------------------------------------- */
-/* Sports Station Nav Tabs (Top Center)                           */
-/* ------------------------------------------------------------- */
+.score-val:hover {
+    transform: scale(1.08);
+}
+
+/* =============================================================
+   SPORTS STATION NAV — Pill Tabs
+   ============================================================= */
 #sports-selector {
     position: fixed;
     top: 80px;
@@ -130,90 +237,164 @@ html, body {
     transform: translateX(-50%);
     z-index: 100;
     display: flex;
-    gap: 8px;
-    background: var(--panel-bg);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 6px;
-    border-radius: 24px;
+    gap: 6px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+    border: 1px solid var(--border-subtle);
+    padding: 5px;
+    border-radius: var(--radius-pill);
     pointer-events: auto;
+    box-shadow: var(--shadow-md);
+    animation: slideDownFade 0.6s var(--ease-out) 0.2s both;
 }
 
 .station-btn {
     background: transparent;
-    border: none;
-    color: var(--text-muted);
-    padding: 8px 16px;
-    border-radius: 16px;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    padding: 9px 18px;
+    border-radius: var(--radius-pill);
     font-family: inherit;
-    font-size: 13px;
-    font-weight: 700;
+    font-size: 12.5px;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all var(--duration-normal) var(--ease-out);
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+}
+
+.station-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, var(--primary), var(--coral));
+    opacity: 0;
+    transition: opacity var(--duration-normal) var(--ease-out);
+    z-index: -1;
 }
 
 .station-btn:hover {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.06);
 }
 
 .station-btn.active {
-    color: #fff;
-    background: linear-gradient(135deg, var(--accent-orange), var(--accent-purple));
-    border: 1px solid var(--accent-orange);
-    box-shadow: 0 0 16px rgba(255, 120, 31, 0.4);
+    color: #ffffff;
+    border-color: rgba(124, 58, 237, 0.4);
+    box-shadow: 0 2px 16px var(--primary-glow), inset 0 1px 0 rgba(255,255,255,0.1);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
-/* ------------------------------------------------------------- */
-/* Accessibility Controls Dock (Bottom Left)                      */
-/* ------------------------------------------------------------- */
+.station-btn.active::before {
+    opacity: 1;
+}
+
+.station-btn span {
+    font-size: 15px;
+    filter: grayscale(0.3);
+    transition: filter var(--duration-normal) var(--ease-out);
+}
+
+.station-btn.active span,
+.station-btn:hover span {
+    filter: grayscale(0) drop-shadow(0 0 4px rgba(255,255,255,0.3));
+}
+
+/* =============================================================
+   ACCESSIBILITY CONTROLS DOCK — Side Panel
+   ============================================================= */
 #accessibility-dock {
     position: fixed;
     bottom: 20px;
     left: 20px;
     z-index: 100;
-    background: var(--panel-bg);
-    backdrop-filter: blur(14px);
-    border: 1px solid var(--border-glow);
-    border-radius: 20px;
-    padding: 14px 18px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 18px 20px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
     width: 300px;
     pointer-events: auto;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+    box-shadow: var(--shadow-lg);
+    animation: slideUpFade 0.6s var(--ease-out) 0.3s both;
+    transition: border-color var(--duration-normal) var(--ease-out),
+                box-shadow var(--duration-normal) var(--ease-out);
+}
+
+#accessibility-dock:hover {
+    border-color: var(--border-glow);
+    box-shadow: var(--shadow-lg), 0 0 40px rgba(124, 58, 237, 0.08);
+}
+
+@keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 .dock-title {
-    font-size: 12px;
+    font-size: 10.5px;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--accent-cyan);
+    letter-spacing: 0.14em;
+    color: var(--primary-light);
     font-weight: 800;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.dock-title span:last-child {
+    color: var(--emerald) !important;
+    font-size: 9px !important;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    padding: 3px 8px;
+    background: rgba(52, 211, 153, 0.1);
+    border: 1px solid rgba(52, 211, 153, 0.2);
+    border-radius: var(--radius-pill);
+    animation: statusPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+    0%, 100% { box-shadow: 0 0 0 0 var(--emerald-glow); }
+    50%      { box-shadow: 0 0 12px 2px var(--emerald-glow); }
 }
 
 .toggle-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 13px;
-    color: var(--text-main);
-    font-weight: 600;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    padding: 6px 0;
+    transition: color var(--duration-fast) var(--ease-out);
+    border-radius: var(--radius-sm);
 }
 
-/* Custom Toggle Switch */
+.toggle-row:hover {
+    color: var(--text-primary);
+}
+
+/* ── Premium Toggle Switch ──────────────────────────────── */
 .switch {
     position: relative;
     display: inline-block;
-    width: 40px;
-    height: 22px;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
 }
 
 .switch input {
@@ -226,101 +407,236 @@ html, body {
     position: absolute;
     cursor: pointer;
     inset: 0;
-    background-color: #334155;
-    transition: .3s;
-    border-radius: 20px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    transition: all var(--duration-normal) var(--ease-out);
+    border-radius: var(--radius-pill);
 }
 
-.slider:before {
+.slider::before {
     position: absolute;
     content: "";
-    height: 16px;
-    width: 16px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    transition: .3s;
+    height: 18px;
+    width: 18px;
+    left: 2px;
+    bottom: 2px;
+    background: var(--text-secondary);
+    transition: all var(--duration-normal) var(--ease-out);
     border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
 input:checked + .slider {
-    background-color: var(--accent-cyan);
+    background: linear-gradient(135deg, var(--primary), #a855f7);
+    border-color: rgba(124, 58, 237, 0.4);
+    box-shadow: 0 0 16px var(--primary-glow);
 }
 
-input:checked + .slider:before {
-    transform: translateX(18px);
+input:checked + .slider::before {
+    transform: translateX(20px);
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1);
 }
 
-/* ------------------------------------------------------------- */
-/* Single-Switch Overlay & Feedback Prompts                       */
-/* ------------------------------------------------------------- */
+input:focus-visible + .slider {
+    outline: 2px solid var(--primary-light);
+    outline-offset: 2px;
+}
+
+/* =============================================================
+   SINGLE-SWITCH CONTROL BAR — Bottom Right Chip
+   ============================================================= */
 #single-switch-bar {
     position: fixed;
     bottom: 20px;
     right: 20px;
     z-index: 100;
-    background: var(--panel-bg);
-    backdrop-filter: blur(14px);
-    border: 1px solid var(--accent-gold);
-    border-radius: 18px;
-    padding: 12px 20px;
-    font-size: 13px;
-    color: var(--accent-gold);
-    font-weight: 700;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-pill);
+    padding: 12px 22px;
+    font-size: 12.5px;
+    color: var(--gold);
+    font-weight: 600;
     display: flex;
     align-items: center;
     gap: 10px;
-    box-shadow: 0 0 24px rgba(255, 179, 71, 0.25);
+    box-shadow: var(--shadow-md), 0 0 30px var(--gold-glow);
     pointer-events: auto;
+    animation: slideUpFade 0.6s var(--ease-out) 0.4s both;
+    transition: all var(--duration-normal) var(--ease-out);
+}
+
+#single-switch-bar:hover {
+    border-color: var(--gold);
+    box-shadow: var(--shadow-md), 0 0 40px var(--gold-glow);
+    transform: translateY(-1px);
 }
 
 .key-badge {
-    background: rgba(255, 179, 71, 0.2);
+    background: rgba(245, 197, 66, 0.12);
     padding: 4px 10px;
-    border-radius: 8px;
-    border: 1px solid var(--accent-gold);
-    font-family: monospace;
-    font-size: 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(245, 197, 66, 0.25);
+    font-family: 'Inter', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--gold-soft);
 }
 
+/* =============================================================
+   FEEDBACK TOAST — Celebration Notification
+   ============================================================= */
 #feedback-toast {
     position: fixed;
     top: 140px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateY(-8px) scale(0.95);
     z-index: 150;
-    background: rgba(74, 222, 128, 0.9);
-    color: #060811;
+    background: linear-gradient(135deg, var(--emerald), var(--teal));
+    color: var(--bg-deep);
     font-weight: 800;
-    padding: 10px 24px;
-    border-radius: 30px;
-    font-size: 15px;
-    box-shadow: 0 0 30px rgba(74, 222, 128, 0.6);
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    padding: 12px 28px;
+    border-radius: var(--radius-pill);
+    box-shadow: 0 8px 32px var(--emerald-glow), 0 0 0 1px rgba(255,255,255,0.15) inset;
     opacity: 0;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.4s var(--ease-spring);
     pointer-events: none;
 }
 
 #feedback-toast.show {
     opacity: 1;
-    transform: translateX(-50%) translateY(10px);
+    transform: translateX(-50%) translateY(8px) scale(1);
 }
 
+/* =============================================================
+   COMFORT VIGNETTE — Motion Sickness Reduction
+   ============================================================= */
 #comfort-vignette {
     position: fixed;
     inset: 0;
     z-index: 50;
     pointer-events: none;
-    background: radial-gradient(circle, rgba(0, 0, 0, 0) 35%, rgba(6, 8, 17, 0.95) 100%);
+    background: radial-gradient(
+        circle at center,
+        rgba(0, 0, 0, 0) 30%,
+        rgba(5, 7, 14, 0.92) 100%
+    );
     opacity: 0;
-    transition: opacity 0.2s ease;
+    transition: opacity 0.25s var(--ease-out);
 }
 
 #comfort-vignette.active {
     opacity: 1;
 }
 
+/* =============================================================
+   A-FRAME SCENE CONTAINER
+   ============================================================= */
 a-scene {
     width: 100%;
     height: 100%;
+}
+
+/* Override A-Frame's default VR button for a premium look */
+.a-enter-vr-button {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(var(--glass-blur)) !important;
+    border: 1px solid var(--border-glow) !important;
+    border-radius: var(--radius-md) !important;
+    padding: 12px 16px !important;
+    box-shadow: var(--shadow-md) !important;
+    transition: all var(--duration-normal) var(--ease-out) !important;
+    opacity: 0.85 !important;
+}
+
+.a-enter-vr-button:hover {
+    opacity: 1 !important;
+    border-color: var(--primary) !important;
+    box-shadow: var(--shadow-md), var(--shadow-glow) !important;
+    transform: scale(1.05) !important;
+}
+
+/* =============================================================
+   RESPONSIVE — Compact for Smaller Viewports
+   ============================================================= */
+@media (max-width: 900px) {
+    #hud-header {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+
+    .score-display {
+        align-self: flex-end;
+    }
+
+    #sports-selector {
+        top: auto;
+        bottom: 80px;
+        left: 50%;
+        flex-wrap: wrap;
+        justify-content: center;
+        max-width: 90vw;
+        border-radius: var(--radius-lg);
+    }
+
+    #accessibility-dock {
+        width: 260px;
+        padding: 14px 16px;
+    }
+
+    .station-btn {
+        padding: 8px 12px;
+        font-size: 11.5px;
+    }
+}
+
+@media (max-width: 600px) {
+    #accessibility-dock {
+        left: 10px;
+        right: 10px;
+        width: auto;
+        bottom: 10px;
+    }
+
+    #single-switch-bar {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        justify-content: center;
+    }
+
+    .brand-container {
+        padding: 10px 14px;
+    }
+
+    .brand-title {
+        font-size: 13px;
+    }
+}
+
+/* =============================================================
+   SCROLLBAR (for any overflow contexts)
+   ============================================================= */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--text-tertiary);
+    border-radius: var(--radius-pill);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
 }

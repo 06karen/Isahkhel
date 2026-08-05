@@ -14,7 +14,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- External Modular Stylesheet -->
     <link rel="stylesheet" href="css/styles.css" />
@@ -37,10 +37,10 @@
                 <span class="score-label">Total Score</span>
                 <span id="score-val" class="score-val">0</span>
             </div>
-            <div style="width: 1px; height: 24px; background: rgba(255,255,255,0.15);"></div>
+            <div style="width: 1px; height: 24px; background: rgba(148,163,184,0.15); border-radius: 1px;"></div>
             <div class="score-item">
                 <span class="score-label">Streak</span>
-                <span id="streak-val" class="score-val" style="color: var(--accent-orange);">0 🔥</span>
+                <span id="streak-val" class="score-val" style="color: var(--coral);">0 🔥</span>
             </div>
         </div>
     </div>
@@ -65,7 +65,7 @@
     <div id="accessibility-dock">
         <div class="dock-title">
             <span>Adaptive Input Engine</span>
-            <span style="color: var(--accent-lime); font-size: 10px;">ONLINE</span>
+            <span style="color: var(--emerald); font-size: 9px;">ONLINE</span>
         </div>
 
         <div class="toggle-row">
@@ -115,43 +115,43 @@
     <!--  A-FRAME 3D ADAPTIVE SPORTS PARK SCENE                           -->
     <!-- ================================================================= -->
     <a-scene 
-        background="color: #060811"
+        background="color: #05070e"
         renderer="colorManagement: true; physicallyCorrectLights: true; antialias: true"
         vr-mode-ui="enterVRButton: #custom-vr-btn">
 
         <!-- Environment Lighting & Stadium Backdrop -->
-        <a-entity id="env" environment="preset: starry; skyType: atmosphere; lighting: distant; ground: arena; groundColor: #1e1b4b; groundColor2: #0f172a; shadow: true"></a-entity>
+        <a-entity id="env" environment="preset: starry; skyType: atmosphere; lighting: distant; ground: arena; groundColor: #1a1035; groundColor2: #0a0e1a; shadow: true"></a-entity>
 
-        <a-light type="ambient" color="#6366f1" intensity="0.85"></a-light>
-        <a-light type="directional" color="#ffedd5" intensity="1.3" position="-8 18 -6" light="castShadow: true"></a-light>
+        <a-light type="ambient" color="#7c3aed" intensity="0.8"></a-light>
+        <a-light type="directional" color="#fef3c7" intensity="1.4" position="-8 18 -6" light="castShadow: true"></a-light>
 
         <!-- Dynamic Stadium Light Beams -->
-        <a-cylinder position="-12 6 -15" radius="0.1" height="15" color="#00f2fe" material="shader: flat; opacity: 0.3; transparent: true" rotation="15 0 20"></a-cylinder>
-        <a-cylinder position="12 6 -15" radius="0.1" height="15" color="#ff781f" material="shader: flat; opacity: 0.3; transparent: true" rotation="15 0 -20"></a-cylinder>
+        <a-cylinder position="-12 6 -15" radius="0.1" height="15" color="#a78bfa" material="shader: flat; opacity: 0.25; transparent: true" rotation="15 0 20"></a-cylinder>
+        <a-cylinder position="12 6 -15" radius="0.1" height="15" color="#fb7185" material="shader: flat; opacity: 0.25; transparent: true" rotation="15 0 -20"></a-cylinder>
 
         <!-- STATION 1: ADAPTIVE BASKETBALL HOOP SHOT -->
         <a-entity id="station-basketball" visible="true" position="0 0 0">
             <a-entity id="hoop-assembly" position="0 0 -8">
-                <a-box position="0 4 0" width="3.6" height="2.4" depth="0.1" color="#1e293b" material="metalness: 0.6; roughness: 0.2">
-                    <a-plane position="0 0 0.06" width="1.4" height="1.0" color="#00f2fe" material="shader: flat; wireframe: true"></a-plane>
+                <a-box position="0 4 0" width="3.6" height="2.4" depth="0.1" color="#111827" material="metalness: 0.7; roughness: 0.15">
+                    <a-plane position="0 0 0.06" width="1.4" height="1.0" color="#a78bfa" material="shader: flat; wireframe: true"></a-plane>
                 </a-box>
                 
-                <a-torus id="hoop-rim" position="0 3.1 0.8" rotation="90 0 0" radius="0.7" radius-tubular="0.06" color="#ff781f" class="sports-target" onclick="shootBasketball()">
-                    <a-ring radius-inner="0.6" radius-outer="0.75" color="#00f2fe" material="shader: flat; opacity: 0.8; transparent: true"
+                <a-torus id="hoop-rim" position="0 3.1 0.8" rotation="90 0 0" radius="0.7" radius-tubular="0.06" color="#fb7185" class="sports-target" onclick="shootBasketball()">
+                    <a-ring radius-inner="0.6" radius-outer="0.75" color="#a78bfa" material="shader: flat; opacity: 0.8; transparent: true"
                             animation="property: scale; dir: alternate; dur: 1000; easing: easeInOutSine; loop: true; to: 1.15 1.15 1.15">
                     </a-ring>
-                    <a-text value="AIM & LAUNCH" position="0 1.0 0" align="center" scale="1.4 1.4 1.4" color="#00f2fe" font="kelsonsans"></a-text>
+                    <a-text value="AIM & LAUNCH" position="0 1.0 0" align="center" scale="1.4 1.4 1.4" color="#a78bfa" font="kelsonsans"></a-text>
                 </a-torus>
 
                 <a-cylinder position="0 2 -0.2" radius="0.15" height="4" color="#475569"></a-cylinder>
             </a-entity>
 
             <a-entity position="0 0 -3">
-                <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1e1b4b" material="metalness: 0.8">
-                    <a-text value="SINGLE-SWITCH LAUNCHER" position="0 0.55 0" align="center" scale="0.7 0.7 0.7" color="#ffb347"></a-text>
+                <a-cylinder position="0 0.4 0" radius="0.8" height="0.8" color="#1a1035" material="metalness: 0.8">
+                    <a-text value="SINGLE-SWITCH LAUNCHER" position="0 0.55 0" align="center" scale="0.7 0.7 0.7" color="#f5c542"></a-text>
                 </a-cylinder>
 
-                <a-sphere id="basketball-mesh" position="0 1.1 0" radius="0.45" color="#ff781f" material="roughness: 0.6" class="sports-target" onclick="shootBasketball()"
+                <a-sphere id="basketball-mesh" position="0 1.1 0" radius="0.45" color="#fb7185" material="roughness: 0.6" class="sports-target" onclick="shootBasketball()"
                           animation__float="property: position; dir: alternate; dur: 1200; easing: easeInOutSine; loop: true; to: 0 1.25 0">
                 </a-sphere>
             </a-entity>
@@ -160,23 +160,23 @@
         <!-- STATION 2: SLALOM GLIDER COURSE -->
         <a-entity id="station-slalom" visible="false" position="0 0 0">
             <a-entity position="-4 0 -6" class="sports-target" onclick="passSlalomGate(this, 'Gate 1')">
-                <a-torus radius="1.4" radius-tubular="0.08" color="#00f2fe" position="0 1.8 0"
+                <a-torus radius="1.4" radius-tubular="0.08" color="#2dd4bf" position="0 1.8 0"
                          animation="property: rotation; to: 0 360 0; dur: 6000; easing: linear; loop: true">
-                    <a-text value="GATE 1: GAZE BOOST" position="0 1.8 0" align="center" color="#00f2fe" width="6"></a-text>
+                    <a-text value="GATE 1: GAZE BOOST" position="0 1.8 0" align="center" color="#2dd4bf" width="6"></a-text>
                 </a-torus>
             </a-entity>
 
             <a-entity position="0 0 -10" class="sports-target" onclick="passSlalomGate(this, 'Gate 2')">
-                <a-torus radius="1.4" radius-tubular="0.08" color="#ff781f" position="0 2.2 0"
+                <a-torus radius="1.4" radius-tubular="0.08" color="#a78bfa" position="0 2.2 0"
                          animation="property: rotation; to: 0 -360 0; dur: 6000; easing: linear; loop: true">
-                    <a-text value="GATE 2: PRECISION" position="0 1.8 0" align="center" color="#ff781f" width="6"></a-text>
+                    <a-text value="GATE 2: PRECISION" position="0 1.8 0" align="center" color="#a78bfa" width="6"></a-text>
                 </a-torus>
             </a-entity>
 
             <a-entity position="4 0 -6" class="sports-target" onclick="passSlalomGate(this, 'Gate 3')">
-                <a-torus radius="1.4" radius-tubular="0.08" color="#4ade80" position="0 1.8 0"
+                <a-torus radius="1.4" radius-tubular="0.08" color="#34d399" position="0 1.8 0"
                          animation="property: rotation; to: 0 360 0; dur: 6000; easing: linear; loop: true">
-                    <a-text value="GATE 3: FINISH" position="0 1.8 0" align="center" color="#4ade80" width="6"></a-text>
+                    <a-text value="GATE 3: FINISH" position="0 1.8 0" align="center" color="#34d399" width="6"></a-text>
                 </a-torus>
             </a-entity>
         </a-entity>
@@ -187,14 +187,14 @@
                 <a-cylinder position="0 2.2 0" rotation="90 0 0" radius="1.5" height="0.1" color="#ef4444" class="sports-target" onclick="shootArchery(100)">
                     <a-cylinder position="0 0.06 0" radius="1.0" height="0.02" color="#ffffff"></a-cylinder>
                     <a-cylinder position="0 0.08 0" radius="0.5" height="0.02" color="#3b82f6"></a-cylinder>
-                    <a-cylinder position="0 0.10 0" radius="0.2" height="0.02" color="#eab308"></a-cylinder>
-                    <a-text value="BULLSEYE 100 PTS" position="0 1.8 0" align="center" color="#eab308" width="7"></a-text>
+                    <a-cylinder position="0 0.10 0" radius="0.2" height="0.02" color="#f5c542"></a-cylinder>
+                    <a-text value="BULLSEYE 100 PTS" position="0 1.8 0" align="center" color="#f5c542" width="7"></a-text>
                 </a-cylinder>
                 <a-box position="0 1 0" width="0.2" height="2" depth="0.2" color="#475569"></a-box>
             </a-entity>
 
-            <a-box position="0 0.5 -2.5" width="1" height="0.8" depth="0.5" color="#1e1b4b" class="sports-target" onclick="shootArchery(50)">
-                <a-text value="TAP TO RELEASE ARROW" position="0 0.5 0" align="center" color="#00f2fe" width="4"></a-text>
+            <a-box position="0 0.5 -2.5" width="1" height="0.8" depth="0.5" color="#1a1035" class="sports-target" onclick="shootArchery(50)">
+                <a-text value="TAP TO RELEASE ARROW" position="0 0.5 0" align="center" color="#a78bfa" width="4"></a-text>
             </a-box>
         </a-entity>
 
@@ -211,8 +211,8 @@
                 <a-cylinder position="0 0.4 1.2" radius="0.15" height="0.8" color="#ef4444" class="sports-target" onclick="rollBowlingBall()"></a-cylinder>
             </a-entity>
 
-            <a-sphere id="bowling-ball" position="0 0.6 -2.5" radius="0.35" color="#9d50bb" class="sports-target" onclick="rollBowlingBall()">
-                <a-text value="ROLL BALL" position="0 0.6 0" align="center" color="#9d50bb" width="4"></a-text>
+            <a-sphere id="bowling-ball" position="0 0.6 -2.5" radius="0.35" color="#7c3aed" class="sports-target" onclick="rollBowlingBall()">
+                <a-text value="ROLL BALL" position="0 0.6 0" align="center" color="#a78bfa" width="4"></a-text>
             </a-sphere>
         </a-entity>
 
@@ -223,16 +223,16 @@
                           cursor="fuse: true; fuseTimeout: 1200"
                           position="0 0 -1"
                           geometry="primitive: ring; radiusInner: 0.016; radiusOuter: 0.026"
-                          material="color: #00f2fe; shader: flat; opacity: 0.85"
+                          material="color: #a78bfa; shader: flat; opacity: 0.85"
                           raycaster="objects: .sports-target">
                 </a-entity>
             </a-entity>
 
             <a-entity id="left-hand" oculus-touch-controls="hand: left" laser-controls="hand: left"
-                      raycaster="objects: .sports-target; far: 12" line="color: #00f2fe; opacity: 0.7">
+                      raycaster="objects: .sports-target; far: 12" line="color: #a78bfa; opacity: 0.7">
             </a-entity>
             <a-entity id="right-hand" oculus-touch-controls="hand: right" laser-controls="hand: right"
-                      raycaster="objects: .sports-target; far: 12" line="color: #ff781f; opacity: 0.7">
+                      raycaster="objects: .sports-target; far: 12" line="color: #fb7185; opacity: 0.7">
             </a-entity>
         </a-entity>
 
